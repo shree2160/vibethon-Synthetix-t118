@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Book, CheckCircle2, Lock, ArrowRight, Filter, Loader2 } from 'lucide-react';
 import { supabase } from '../api/supabase';
+import { useNavigate } from 'react-router-dom';
 
 const Modules = () => {
+  const navigate = useNavigate();
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -54,7 +56,8 @@ const Modules = () => {
           modules.map((m) => (
             <div 
               key={m.id} 
-              className={`group relative glass rounded-3xl p-6 border ${m.locked ? 'border-white/5 opacity-70' : 'border-white/10 hover:border-primary/50'} transition-all duration-300 flex flex-col`}
+              onClick={() => !m.locked && navigate(`/modules/${m.id}`)}
+              className={`group relative glass rounded-3xl p-6 border ${m.locked ? 'border-white/5 opacity-70 cursor-not-allowed' : 'border-white/10 hover:border-primary/50 cursor-pointer'} transition-all duration-300 flex flex-col`}
             >
               {m.locked && (
                 <div className="absolute inset-0 bg-slate-950/40 backdrop-blur-[1px] rounded-3xl z-10 flex items-center justify-center">

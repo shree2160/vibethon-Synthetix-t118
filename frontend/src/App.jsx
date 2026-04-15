@@ -8,6 +8,9 @@ import Dashboard from './pages/Dashboard';
 import Modules from './pages/Modules';
 import Games from './pages/Games';
 import Login from './pages/Login';
+import Profile from './pages/Profile';
+import ModuleDetail from './pages/ModuleDetail';
+import LessonViewer from './pages/LessonViewer';
 
 function ProtectedLayout({ children }) {
   return (
@@ -32,8 +35,11 @@ function App() {
           
           {/* Protected Routes */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/profile" element={<ProtectedLayout><Profile /></ProtectedLayout>} />
           <Route path="/dashboard" element={<ProtectedLayout><Dashboard /></ProtectedLayout>} />
           <Route path="/modules" element={<ProtectedLayout><Modules /></ProtectedLayout>} />
+          <Route path="/modules/:id" element={<ProtectedLayout><ModuleDetail /></ProtectedLayout>} />
+          <Route path="/modules/:moduleId/lessons/:lessonId" element={<ProtectedRoute><LessonViewer /></ProtectedRoute>} />
           <Route path="/playground" element={<ProtectedLayout><Playground /></ProtectedLayout>} />
           <Route path="/simulations" element={<ProtectedLayout><Simulations /></ProtectedLayout>} />
           <Route path="/games" element={<ProtectedLayout><Games /></ProtectedLayout>} />

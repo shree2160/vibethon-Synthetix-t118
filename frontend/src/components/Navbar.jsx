@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Brain, Code, Gamepad2, LayoutDashboard, Trophy, BookOpen, LogOut } from 'lucide-react';
+import { Brain, Code, Gamepad2, LayoutDashboard, Trophy, BookOpen, LogOut, UserCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -8,6 +8,7 @@ const Navbar = () => {
   const { signOut } = useAuth();
   
   const navItems = [
+    { name: 'Profile', path: '/profile', icon: <UserCircle size={20} /> },
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Modules', path: '/modules', icon: <BookOpen size={20} /> },
     { name: 'Games', path: '/games', icon: <Gamepad2 size={20} /> },
