@@ -1,11 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Brain, Code, Gamepad2, LayoutDashboard, Trophy, BookOpen, LogOut, UserCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../api/supabase';
 
 const Navbar = () => {
   const location = useLocation();
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
+  const [profile, setProfile] = useState({ xp: 0 });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user) return;
+      const { data } = await supabase
+        .from('profiles')
+        .select('xp')
+        .eq('id', user.id)
+        .single();
+      if (data) setProfile(data);
+    };
+
+    fetchProfile();
+
+    // Subscribe to profile changes for real-time updates
+    const channel = supabase
+      .channel('profile_updates')
+      .on('postgres_changes', { 
+        event: 'UPDATE', 
+        schema: 'public', 
+        table: 'profiles',
+        filter: `id=eq.${user?.id}`
+      }, (payload) => {
+        setProfile(payload.new);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
+  const level = Math.floor(profile.xp / 500) + 1;
+  const progress = (profile.xp % 500) / 5; // Percentage toward next 500 XP
   
   const navItems = [
     { name: 'Profile', path: '/profile', icon: <UserCircle size={20} /> },
@@ -46,10 +82,13 @@ const Navbar = () => {
       <div className="mt-auto space-y-4">
         <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 relative overflow-hidden">
           <div className="relative z-10">
-            <p className="text-xs text-indigo-200 font-medium mb-1">Current XP</p>
-            <p className="text-2xl font-bold text-white mb-3">2,450</p>
+            <p className="text-xs text-indigo-200 font-medium mb-1">Level {level}</p>
+            <p className="text-2xl font-bold text-white mb-3">{profile.xp.toLocaleString()} XP</p>
             <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
-              <div className="h-full bg-white w-2/3 rounded-full"></div>
+              <div 
+                className="h-full bg-white transition-all duration-1000" 
+                style={{ width: `${progress}%` }}
+              ></div>
             </div>
           </div>
           <div className="absolute -right-4 -bottom-4 opacity-20">
@@ -65,6 +104,7 @@ const Navbar = () => {
           <span className="font-medium">Sign Out</span>
         </button>
       </div>
+
     </nav>
   );
 };

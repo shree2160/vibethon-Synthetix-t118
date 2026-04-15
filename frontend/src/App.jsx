@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import ModuleDetail from './pages/ModuleDetail';
 import LessonViewer from './pages/LessonViewer';
+import Leaderboard from './pages/Leaderboard';
 
 function ProtectedLayout({ children }) {
   return (
@@ -43,7 +44,7 @@ function App() {
           <Route path="/playground" element={<ProtectedLayout><Playground /></ProtectedLayout>} />
           <Route path="/simulations" element={<ProtectedLayout><Simulations /></ProtectedLayout>} />
           <Route path="/games" element={<ProtectedLayout><Games /></ProtectedLayout>} />
-          <Route path="/leaderboard" element={<ProtectedLayout><div className="pl-64 p-8 text-2xl">Leaderboard Coming Soon...</div></ProtectedLayout>} />
+          <Route path="/leaderboard" element={<ProtectedLayout><Leaderboard /></ProtectedLayout>} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
